@@ -163,6 +163,13 @@
           "desc": "Modifies the appearance of gemstone slots."
         }
       },
+      "fishing": {
+        "@value": "Fishing Config",
+        "rodParts": {
+          "@value": "Rod Parts",
+          "desc": "Adds an icon to Rod Parts and changes the style a bit."
+        }
+      },
       "misc": {
         "@value": "Misc Config",
         "misc": {

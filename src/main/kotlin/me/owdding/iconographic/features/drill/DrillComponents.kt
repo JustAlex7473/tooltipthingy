@@ -165,7 +165,7 @@ data object DrillComponents : TooltipFeature() {
             return max(nameWidth, max(statsWidth, 100))
         }
 
-        override fun getHeight(font: Font): Int = 18 + (statLines.size * (font.lineHeight + 1))
+        override fun getHeight(font: Font): Int = (18 + (statLines.size * (font.lineHeight + 1))).coerceAtLeast(26)
     }
 
     enum class ComponentType(location: String, val color: Int) {

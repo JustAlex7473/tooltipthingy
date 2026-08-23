@@ -6,6 +6,7 @@ import com.teamresourceful.resourcefulconfig.api.types.options.TranslatableValue
 import com.teamresourceful.resourcefulconfigkt.api.ConfigKt
 import me.owdding.iconographic.ApiDebug
 import me.owdding.iconographic.Iconographic
+import me.owdding.iconographic.config.categories.fishing.FishingConfig
 import me.owdding.iconographic.config.categories.mining.MiningConfig
 import me.owdding.iconographic.config.categories.misc.MiscConfig
 import me.owdding.iconographic.config.categories.pets.PetsConfig
@@ -22,7 +23,7 @@ enum class NonSkyBlockItemMode {
 object Config : ConfigKt("iconographic/config"), AutoTranslated {
 
     init {
-        categories(VisualsConfig, TagConfig, PetsConfig, MiningConfig, MiscConfig)
+        categories(VisualsConfig, TagConfig, PetsConfig, MiningConfig, FishingConfig, MiscConfig)
     }
 
     override val translationBase: String = "iconographic.config"
