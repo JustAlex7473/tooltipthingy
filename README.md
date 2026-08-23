@@ -1,12 +1,10 @@
 # Iconographic
 
-<img align="right" width="350" src=".github/images/pet.png" alt="Pet Tooltip Preview">
+<img align="right" width="300" src=".github/images/drill.png" alt="Drill Tooltip Preview">
 
 Remodel your Hypixel SkyBlock item tooltips completely to look much more fancy and organized.
 
 Tired of walls of plain text? Instead, look at beautiful icons, progress bars, perfectly aligned stats, and custom categorized tags in your tooltips.
-
-<br clear="all">
 
 ## Features
 

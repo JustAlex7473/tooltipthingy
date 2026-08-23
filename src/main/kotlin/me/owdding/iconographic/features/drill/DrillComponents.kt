@@ -5,7 +5,6 @@ import me.owdding.iconographic.ExtractableTooltipLine
 import me.owdding.iconographic.Iconographic.id
 import me.owdding.iconographic.TooltipLine
 import me.owdding.iconographic.config.categories.mining.MiningConfig
-import me.owdding.iconographic.config.categories.misc.MiscConfig
 import me.owdding.iconographic.font
 import me.owdding.iconographic.lines.SpacerLine
 import me.owdding.iconographic.system.RegisterFeature
@@ -20,6 +19,7 @@ import net.minecraft.world.item.ItemStack
 import tech.thatgravyboat.skyblockapi.api.data.SkyBlockCategory
 import tech.thatgravyboat.skyblockapi.api.datatype.DataTypes
 import tech.thatgravyboat.skyblockapi.api.datatype.getData
+import tech.thatgravyboat.skyblockapi.api.remote.api.SkyBlockId
 import kotlin.math.max
 
 @RegisterFeature
@@ -81,9 +81,9 @@ data object DrillComponents : TooltipFeature() {
             return Result.unmodified
         }
 
-        val upgradeComp = parseComponent(list, upgradeRange, ComponentType.UPGRADE) ?: return Result.unmodified
-        val engineComp = parseComponent(list, engineRange, ComponentType.ENGINE) ?: return Result.unmodified
-        val tankComp = parseComponent(list, tankRange, ComponentType.TANK) ?: return Result.unmodified
+        val upgradeComp = parseComponent(list, upgradeRange, ComponentType.UPGRADE, getData(DataTypes.UPGRADE_MODULE)) ?: return Result.unmodified
+        val engineComp = parseComponent(list, engineRange, ComponentType.ENGINE, getData(DataTypes.ENGINE)) ?: return Result.unmodified
+        val tankComp = parseComponent(list, tankRange, ComponentType.TANK, getData(DataTypes.FUEL_TANK)) ?: return Result.unmodified
 
         val removeStart = tankRange.first
         val removeEnd = if (isMechanicLine) foundBlocks[0].last else foundBlocks[0].last
@@ -101,38 +101,67 @@ data object DrillComponents : TooltipFeature() {
         return Result.modified
     }
 
-    private fun parseComponent(list: MutableList<TooltipLine>, range: IntRange, type: ComponentType): DrillComponentLine? {
+    private fun parseComponent(
+        list: MutableList<TooltipLine>,
+        range: IntRange,
+        type: ComponentType,
+        skyblockId: String?,
+    ): DrillComponentLine? {
         val lines = range.mapNotNull { list[it] as? ComponentLike }
         if (lines.isEmpty()) return null
         val isInstalled = !lines[0].stripped.trim().endsWith("Not Installed")
-        return DrillComponentLine(type, lines[0], lines.drop(1), isInstalled)
+        return DrillComponentLine(type, lines[0], lines.drop(1), isInstalled, skyblockId?.let { SkyBlockId.item(it) })
     }
 
     data class DrillComponentLine(
         val type: ComponentType,
         val nameLine: ComponentLike,
         val statLines: List<ComponentLike>,
-        val isInstalled: Boolean
+        val isInstalled: Boolean,
+        val skyblockId: SkyBlockId?,
     ) : ExtractableTooltipLine {
 
+        private val textXOffset = 32
+
+        private val itemStack: ItemStack? by lazy {
+            if (!isInstalled || skyblockId == null) return@lazy null
+            skyblockId.toItem().takeUnless { it.isEmpty }
+        }
+
         override fun extract(graphics: GuiGraphicsExtractor, totalWidth: Int, x: Int, y: Int) {
-            graphics.blitSprite(RenderPipelines.GUI_TEXTURED, id("drill/slot"), x, y, 16, 16, ARGB.opaque(DisplayColor.DARK_GRAY))
+            val totalHeight = getHeight(font)
 
-            val drawColor = if (isInstalled) type.color else ARGB.opaque(DisplayColor.GRAY)
-            graphics.blitSprite(RenderPipelines.GUI_TEXTURED, type.id, x, y, 16, 16, drawColor)
+            val bgSize = 26
+            val iconSize = 16
+            val bgY = y + (totalHeight - bgSize) / 2
+            val iconY = y + (totalHeight - iconSize) / 2
 
-            graphics.text(font, nameLine.charSequence, x + 22, y + 4, -1)
+            val iconX = x + 5
+
+            val textX = x + textXOffset
+
+            graphics.blitSprite(RenderPipelines.GUI_TEXTURED, id("drill/background"), x, bgY, bgSize, bgSize, -1)
+
+            val stack = itemStack
+            if (stack != null) {
+                graphics.item(stack, iconX, iconY)
+            } else {
+                val drawColor = if (isInstalled) type.color else ARGB.opaque(DisplayColor.GRAY)
+                graphics.blitSprite(RenderPipelines.GUI_TEXTURED, type.id, iconX, iconY, iconSize, iconSize, drawColor)
+            }
+
+            graphics.text(font, nameLine.charSequence, textX, y + 4, -1)
 
             var currentY = y + 16
             for (stat in statLines) {
-                graphics.text(font, stat.charSequence, x + 22, currentY, -1)
+                graphics.text(font, stat.charSequence, textX, currentY, -1)
                 currentY += font.lineHeight + 1
             }
         }
 
         override fun getWidth(font: Font): Int {
-            val nameWidth = nameLine.width + 22
-            val statsWidth = statLines.maxOfOrNull { it.width + 22 } ?: 0
+            val nameWidth = nameLine.width + textXOffset
+            val statsWidth = statLines.maxOfOrNull { it.width + textXOffset } ?: 0
             return max(nameWidth, max(statsWidth, 100))
         }
 
