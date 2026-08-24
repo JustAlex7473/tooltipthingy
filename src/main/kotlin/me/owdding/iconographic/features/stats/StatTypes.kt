@@ -5,6 +5,7 @@ import me.owdding.iconographic.utils.chat.DisplayColor
 import tech.thatgravyboat.skyblockapi.utils.extentions.toFormattedName
 import tech.thatgravyboat.skyblockapi.utils.text.Text
 import tech.thatgravyboat.skyblockapi.utils.text.TextBuilder.append
+import tech.thatgravyboat.skyblockapi.utils.text.TextColor
 import tech.thatgravyboat.skyblockapi.utils.text.TextStyle.font
 import java.util.concurrent.atomic.AtomicInteger
 
@@ -71,6 +72,7 @@ enum class StatType(
     FIG_FORTUNE(BASE_FORAGING_FORTUNE),
     MANGROVE_FORTUNE(BASE_FORAGING_FORTUNE),
     HELIX_FORTUNE(BASE_FORAGING_FORTUNE),
+    TIMBER('', TextColor.RED),
 
     // Fishing Stats
     FISHING_SPEED('', DisplayColor.AQUA),
