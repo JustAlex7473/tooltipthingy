@@ -154,30 +154,32 @@ object Iconographic : ClientModInitializer, MeowddingLogger by MeowddingLogger.a
                     val component = IconographicTooltipComponent(line)
                     component.totalWidth = totalWidth
 
-                    if (line is SideTooltipLine && line.getSideWidth(font) > 0) {
+                    if (line is SideTooltipLine) {
                         component.sideWidth = maxSideWidth
-                        if (currentSideStart == null) {
+                        val sideWidth = line.getSideWidth(font)
+
+                        if (currentSideStart == null && sideWidth > 0) {
                             currentSideStart = component
                             component.isSideBlockStart = true
                         }
-                        currentSideHeight += line.getHeight(font)
-                    } else {
+
                         if (currentSideStart != null) {
-                            currentSideStart.sideBlockHeight = currentSideHeight
-                            currentSideStart = null
-                            currentSideHeight = 0
+                            currentSideHeight += line.getHeight(font)
+                            if (sideWidth > 0) {
+                                currentSideStart.sideBlockHeight = currentSideHeight
+                            }
                         }
+                    } else {
+                        currentSideStart = null
+                        currentSideHeight = 0
                     }
 
                     lines.add(component)
                 }
 
                 is ClientTooltipComponent -> {
-                    if (currentSideStart != null) {
-                        currentSideStart.sideBlockHeight = currentSideHeight
-                        currentSideStart = null
-                        currentSideHeight = 0
-                    }
+                    currentSideStart = null
+                    currentSideHeight = 0
                     lines.add(line)
                 }
             }
