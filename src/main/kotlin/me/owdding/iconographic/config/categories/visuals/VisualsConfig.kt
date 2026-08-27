@@ -11,7 +11,7 @@ object VisualsConfig : CategoryKt("visuals"), AutoTranslated {
 
     init { autoSeparator("general") }
     val spinny by autoBoolean(false)
-    val vanillaBackground by autoBoolean(false)
+    val vanillaBackground by autoBoolean(true)
     val forceDefaultVanillaBackground by autoBoolean(false)
     val skyBlockColor by autoBoolean(true)
 
