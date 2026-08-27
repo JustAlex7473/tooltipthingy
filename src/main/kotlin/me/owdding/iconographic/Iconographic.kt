@@ -146,7 +146,6 @@ object Iconographic : ClientModInitializer, MeowddingLogger by MeowddingLogger.a
         var currentSideStart: IconographicTooltipComponent? = null
         var currentSideHeight = 0
 
-        lines.add(TooltipWidthLine(totalWidth, maxSideWidth))
 
         for (line in entries) {
             when (line) {
@@ -186,6 +185,7 @@ object Iconographic : ClientModInitializer, MeowddingLogger by MeowddingLogger.a
         }
 
         currentSideStart?.sideBlockHeight = currentSideHeight
+        lines.add(TooltipWidthLine(totalWidth, maxSideWidth))
     }
 
     fun id(path: String) = Identifiers.of("iconographic", path)

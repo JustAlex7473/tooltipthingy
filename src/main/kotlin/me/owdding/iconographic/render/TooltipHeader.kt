@@ -41,6 +41,8 @@ data class TooltipHeader(
 
     private val showIcon = item.getSkyBlockId() != null || Config.nonSkyBlockItemMode != NonSkyBlockItemMode.NO_ICON
 
+    val hasTags = leftTags.isNotEmpty() || rightTags.isNotEmpty()
+
     val leftTagWidth = leftTags.sumOf { it.width }
     val rightTagWidth = rightTags.sumOf { it.width }
     val tagWidthTotal = when {
@@ -63,7 +65,7 @@ data class TooltipHeader(
         }
 
         val xOffset = if (showIcon) 25 else 0
-        val yOffsetText = 2
+        val yOffsetText = if (showIcon || hasTags) 2 else 0
 
         graphics.text(font, name, x + xOffset, y + yOffsetText, -1)
 
@@ -90,11 +92,7 @@ data class TooltipHeader(
         )
     }
 
-    override fun getHeight(font: Font): Int {
-        val hasTags = leftTags.isNotEmpty() || rightTags.isNotEmpty()
-        if (showIcon || hasTags) return 26
-        return font.lineHeight + 4
-    }
+    override fun getHeight(font: Font): Int = if (showIcon || hasTags) 26 else 10
 
     // Taken and modified from SkyOcean
     private fun GuiGraphicsExtractor.extractItem(item: ItemStack, x: Int, y: Int) {
