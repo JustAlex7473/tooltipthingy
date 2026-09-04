@@ -6,11 +6,11 @@ import me.owdding.iconographic.config.categories.misc.MiscConfig
 import me.owdding.iconographic.system.RegisterFeature
 import me.owdding.iconographic.system.Result
 import me.owdding.iconographic.system.TooltipFeature
-import net.minecraft.ChatFormatting
 import net.minecraft.network.chat.Component
 import net.minecraft.world.item.ItemStack
 import tech.thatgravyboat.skyblockapi.api.datatype.DataTypes
 import tech.thatgravyboat.skyblockapi.api.repo.apis.SkyBlockEnchantmentsRepo
+import tech.thatgravyboat.skyblockapi.utils.extentions.getLore
 import tech.thatgravyboat.skyblockapi.utils.text.TextProperties.stripped
 
 
@@ -24,15 +24,12 @@ data object EnchantedBookFeature : TooltipFeature() {
     private fun ItemStack.enchantTitle(): Component? {
         val entry = DataTypes.ENCHANTMENTS()?.entries?.firstOrNull() ?: return null
         val enchant = SkyBlockEnchantmentsRepo.get(entry.key) ?: return null
-        val query = SkyBlockEnchantmentsRepo.Query(id = entry.key, level = entry.value)
-        val displayName = SkyBlockEnchantmentsRepo.getLazyItemStack(query)?.getDisplayName() ?: return null
 
-        // sorry im hardcoding this im skill issued 🥺
-        return if (enchant.isUltimate) {
-            displayName.copy().withStyle(ChatFormatting.LIGHT_PURPLE, ChatFormatting.BOLD)
-        } else {
-            displayName.copy().withStyle(ChatFormatting.BLUE)
-        }
+        // makes a string that matches the line for the enchantment name + level
+        val fullEnchantName = "${enchant.name} ${enchant.levels[entry.value]?.literalLevel}"
+
+        // Finds constructed enchantment name + level from lore of itemstack
+        return getLore().firstOrNull { it.stripped == fullEnchantName }
     }
 
     // Replaces "Enchanted Book" item name with the enchant's title
