@@ -45,11 +45,8 @@ data object EnchantedBookFeature : TooltipFeature() {
         val titleIndex = strippedLines.indexOfFirst { it == titleText }
         if (titleIndex == -1) return Result.unmodified
 
-        val linesIndexes = listOf(titleIndex, firstEmptyIndex, combinableInAnvilIndex)
-
         // performs the removal process
-        repeat(linesIndexes.size) { list.removeAt(linesIndexes[it]) }
-
+        listOf(titleIndex, firstEmptyIndex, combinableInAnvilIndex).forEach { list.removeAt(it) }
         return Result.modified
     }
 
