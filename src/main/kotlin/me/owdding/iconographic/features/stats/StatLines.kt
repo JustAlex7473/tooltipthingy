@@ -57,7 +57,7 @@ data object StatLines : TooltipFeature() {
 
             // This takeUnless is here to stop false positives from happening when entering Maxwell's menu
             val hasSkyblockId = getSkyBlockId() != null
-            val stat = StatType.fromName(name?.stripped?.trim() ?: "").takeUnless { it == StatType.ACCESSORY_POWER && !hasSkyblockId }
+            val stat = StatType.fromName(name?.stripped?.trim() ?: "").takeUnless { it?.requiresSbId == true && !hasSkyblockId }
 
             if (name == null || value == null || stat == null) {
                 add(line)
