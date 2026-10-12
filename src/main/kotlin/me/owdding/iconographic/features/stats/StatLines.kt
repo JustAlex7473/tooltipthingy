@@ -57,7 +57,7 @@ data object StatLines : TooltipFeature() {
 
             // This takeUnless is here to stop false positives from happening when a stat is used in a place where it logically would not need formatting, like maxwell's menu with accessory power
             val hasSkyblockId = getSkyBlockId() != null
-            val stat = StatType.fromName(name?.stripped?.trim() ?: "").takeUnless { it?.requiresSbId == true && !hasSkyblockId }
+            val stat = StatType.fromName(name?.stripped?.trim() ?: "")?.takeUnless { it.requiresSbId && !hasSkyblockId }
 
             if (name == null || value == null || stat == null) {
                 add(line)
